@@ -4,11 +4,11 @@ MONGODB_HOST = "mongodb+srv://lzhang34:XAKq9aOu@388j.xxjfouq.mongodb.net/388j?re
 
 
 
-#mongodb+srv://lzhang34:ITnqjENW1qdoCUul@trivialtrivia.qyxgxjd.mongodb.net/?retryWrites=true&w=majority&appName=TrivialTrivia
+#mongodb+srv://lzhang34:ITnqjENW1qdoCUul@trivialtrivia.qyxgxjd.mongodb.net/TrivialTrivia?retryWrites=true&w=majority
 
 """
 MongoDB:
 lzhang34
-ITnqjENW1qdoCUul
+ITnqjENW1qdoCUul    
 
 """
