@@ -12,50 +12,39 @@ users = Blueprint("users", __name__)
 
 """ ************ User Management views ************ """
 
-
-# TODO: implement
 @users.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
-
+        return redirect('/')
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(username=form.username.data, 
                     email=form.email.data, password=hashed)
         user.save()
-        return redirect(url_for('users.login'))
-    
+        return redirect('/login')
     return render_template('register.html', title='Register', form=form)
 
-
-# TODO: implement
 @users.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
-
+        return redirect('/')
     form = LoginForm()
     if form.validate_on_submit():
         user = User.objects(username=form.username.data).first()
-
         if (user is not None and bcrypt.check_password_hash(user.password, form.password.data)):
             login_user(user)
-            return redirect(url_for('users.account'))
-        else:
-            flash('Login Unsuccessful. Please check username and password', 'danger')
-
+            return redirect('/account')
+        if current_user.is_authenticated:
+            flash("Please put your username and password in again.")
     return render_template('login.html', title='Login', form=form)
-    
 
-
-# TODO: implement
 @users.route("/logout")
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('movies.index'))
+    return redirect('/')
+
 
 
 @users.route("/account", methods=["GET", "POST"])
