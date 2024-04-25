@@ -32,7 +32,7 @@ bcrypt = Bcrypt()
 movie_client = MovieClient(OMDB_API_KEY)
 
 from .users.routes import users
-from .movies.routes import movies
+from .trivia.routes import movies
 
 def custom_404(e):
     return render_template("404.html", message="404 lol", link=url_for("movies.index")), 404

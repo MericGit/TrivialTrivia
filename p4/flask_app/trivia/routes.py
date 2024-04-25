@@ -4,9 +4,10 @@ from flask import Blueprint, render_template, url_for, redirect, request, flash
 from flask_login import current_user
 
 from .. import movie_client
-from ..forms import MovieReviewForm, SearchForm
+from ..forms import MovieReviewForm, TriviaGuessForm
 from ..models import User, Review
 from ..utils import current_time
+from ..trivia import trivia_api_utils
 
 movies = Blueprint("movies", __name__)
 """ ************ Helper for pictures uses username to get their profile picture************ """
@@ -18,15 +19,23 @@ def get_b64_img(username):
 
 """ ************ View functions ************ """
 
-
+Correct = 0
 @movies.route("/", methods=["GET", "POST"])
 def index():
-    form = SearchForm()
+    Question, Answer = trivia_api_utils.get_single_question()
+    form = TriviaGuessForm()
+    print("Question:", Question)
+    print("Answer:", Answer)
 
     if form.validate_on_submit():
-        return redirect(url_for("movies.query_results", query=form.search_query.data))
-
-    return render_template("index.html", form=form)
+        print("User's Guess:", form.guess.data)
+        if form.guess.data == Answer:
+            print("Correct!")
+            global Correct
+            Correct += 1
+        #return redirect(url_for("movies.index"))
+    #form.guess.data = ""
+    return render_template("index.html", form=form, question=Question, answer=Answer, num_correct = Correct)
 
 
 @movies.route("/search-results/<query>", methods=["GET"])

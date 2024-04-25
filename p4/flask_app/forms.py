@@ -15,6 +15,12 @@ from wtforms.validators import (
 
 from .models import User
 
+class TriviaGuessForm(FlaskForm):
+    guess = StringField(
+        "Guess", validators=[InputRequired(), Length(min=1, max=100)]
+    )
+    submit = SubmitField("Submit Guess")
+
 
 class SearchForm(FlaskForm):
     search_query = StringField(
