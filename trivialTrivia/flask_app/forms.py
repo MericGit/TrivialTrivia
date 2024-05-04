@@ -21,20 +21,21 @@ class TriviaGuessForm(FlaskForm):
     )
     submit = SubmitField("Submit Guess")
 
-
-class SearchForm(FlaskForm):
-    search_query = StringField(
-        "Query", validators=[InputRequired(), Length(min=1, max=100)]
+class QuestionSubmissionForm(FlaskForm):
+    question = StringField(
+        "Question", validators=[InputRequired(), Length(min=1, max=100)]
     )
-    submit = SubmitField("Search")
-
-
-class MovieReviewForm(FlaskForm):
-    text = TextAreaField(
-        "Comment", validators=[InputRequired(), Length(min=5, max=500)]
+    answer = StringField(
+        "Answer", validators=[InputRequired(), Length(min=1, max=100)]
     )
-    submit = SubmitField("Enter Comment")
-
+    category = SelectField(
+        "Category", validate_choice=True,
+        choices=['General Knowledge','Entertainment: Books','Entertainment: Film','Entertainment: Music','Entertainment: Musicals & Theatres',
+        'Entertainment: Television','Entertainment: Video Games','Entertainment: Board Games','Science & Nature','Science: Computers'
+        'Science: Mathematics','Mythology','Sports','Geography','History','Politics','Art','Celebrities','Animals','Vehicles',
+        'Entertainment: Comics','Science: Gadgets','Entertainment: Japanese Anime & Manga','Entertainment: Cartoon & Animations']
+    )
+    submit = SubmitField("Submit Question")
 
 class RegistrationForm(FlaskForm):
     username = StringField(
