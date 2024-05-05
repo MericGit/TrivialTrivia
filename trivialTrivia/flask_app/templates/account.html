@@ -29,7 +29,7 @@
             </div>
             {% endif %}
         </div>
-        {{ update_username_form.submit_username(class="review-button") }}
+        {{ update_username_form.submit_username(class="question-button") }}
     </form>
 </div>
 
@@ -37,7 +37,7 @@
     <h3 class="text-xl">
         Update Profile Picture
     </h3>
-    <form class="review-form" method="POST" action="" enctype="multipart/form-data">
+    <form class="question-form" method="POST" action="" enctype="multipart/form-data">
         {{ update_profile_pic_form.csrf_token }}
         <div class="form-group">
             {{ update_profile_pic_form.picture.label }}
@@ -50,12 +50,12 @@
             </div>
             {% endif %}
         </div>
-        {{ update_profile_pic_form.submit_picture(class="review-button") }}
+        {{ update_profile_pic_form.submit_picture(class="question-button") }}
     </form>
 </div>
 
 <div class="flex justify-center">
-    {# TODO: Link to see all of the current user's reviews. #}
+    {# TODO: Link to see all of the current user's created questions. #}
     <div class="flex justify-center">
         <a class="question-button" href="{{ url_for('trivia.user_statistics', username=current_user.username) }}">Statistics Page</a>
     </div>
