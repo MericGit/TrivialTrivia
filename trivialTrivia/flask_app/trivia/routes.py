@@ -118,3 +118,12 @@ def user_detail(username):
         return render_template("query.html", error_msg=str(e))
 """
 
+
+@trivia.route("/leaderboard")
+def leaderboard():
+    users = User.objects()
+
+    for i in users:
+        print(i)
+
+    return render_template("404.html")
