@@ -117,3 +117,4 @@ def user_detail(username):
     except ValueError as e:
         return render_template("query.html", error_msg=str(e))
 """
+
