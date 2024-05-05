@@ -17,6 +17,7 @@ def get_b64_img(username):
     bytes_im = io.BytesIO(user.profile_pic.read())
     image = base64.b64encode(bytes_im.getvalue()).decode()
     return image
+
 first_load = True
 """ ************ View functions ************ """
 @trivia.route("/", methods=["GET", "POST"])
@@ -38,9 +39,13 @@ def index():
             print(answer)
             print(question)
             print(session['question_id'])
-            if form.guess.data == answer:
+            if form.guess.data.lower() == answer.lower():
                 flash("Correct!")
                 session['score'] += 1
+                if current_user.is_authenticated:  
+                    if session['score'] > current_user.high_score:
+                        current_user.high_score = session['score']
+                        current_user.save()
             else:
                 flash("Incorrect!")
                 session.modified = True
@@ -52,7 +57,7 @@ def add_question():
     form = QuestionSubmissionForm()
     if form.validate_on_submit():
         question = Question(
-            maker=current_user._get_current_object(),
+            creator=current_user._get_current_object(),
             question=form.question.data,
             answer=form.answer.data,
             category=form.category.data
@@ -62,7 +67,7 @@ def add_question():
 
         return redirect(request.path)
     return render_template(
-        "add_question.html", form=form
+        "question_submission.html", form=form
     )
 
 # @trivia.route("/movies/<movie_id>", methods=["GET", "POST"])
