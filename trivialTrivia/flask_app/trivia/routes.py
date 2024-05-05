@@ -23,17 +23,34 @@ def index():
     global first_load
     if first_load:
         print("INIT!")
+        session['mode'] = "api"
         session['score'] = 0
         session['question_id'] = 0
+        session['mongo_question_id'] = 0
         session['questions'], session['answers'] = trivia_api_utils.get_batch_question()
+        mongo_questions = []
+        mongo_answers = []
+        for q in Question.objects():
+            mongo_questions.append(q.question)
+            mongo_answers.append(q.answer)
+        session['mongo_questions'] = mongo_questions
+        session['mongo_answers'] = mongo_answers
         first_load = False
     form = TriviaGuessForm()
-    question, answer = session['questions'][session['question_id']], session['answers'][session['question_id']]
-    
+    if session['mode'] == "api":
+        question, answer = session['questions'][session['question_id']], session['answers'][session['question_id']]
+    elif session['mode'] == "mongo":
+        question, answer = session['mongo_questions'][session['mongo_question_id']], session['mongo_answers'][session['mongo_question_id']]
     if request.method == "POST":
         
         if form.validate_on_submit():
-            session['question_id'] += 1
+            if session['mode'] == "api":
+                session['question_id'] += 1
+            elif session['mode'] == "mongo":
+                session['mongo_question_id'] += 1
+                if session['mongo_question_id'] >= len(session['mongo_questions']):
+                    session['mode'] = "api"
+                    session['mongo_question_id'] = 0
             print(answer)
             print(question)
             print(session['question_id'])
@@ -48,7 +65,7 @@ def index():
                 flash("Incorrect!")
                 session.modified = True
             return redirect(url_for("trivia.index"))
-    return render_template("index.html", form=form, question=question, answer=answer, num_correct=session['score'])
+    return render_template("index.html", form=form, question=question, answer=answer, num_correct=session['score'], mode=session['mode'])
 
 @trivia.route("/question_submission", methods=["GET", "POST"])
 def question_submission():
@@ -80,6 +97,8 @@ def user_statistics(username):
         return render_template("user_statistics.html", error ="Hi", user=None, image=None)
     questions = Question.objects(creator=user)
     return render_template("user_statistics.html", user=user, questions = questions, image=get_b64_img(user.username))
+
+
 @trivia.route("/leaderboard")
 def leaderboard():
     users = list(User.objects())
