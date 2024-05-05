@@ -1,9 +1,6 @@
-from ast import Pass
-from flask_login import current_user
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from werkzeug.utils import secure_filename
-from wtforms import StringField, SubmitField, TextAreaField, PasswordField, SelectField
+from wtforms import StringField, SubmitField, PasswordField, SelectField
 from wtforms.validators import (
     InputRequired,
     Length,
@@ -11,7 +8,6 @@ from wtforms.validators import (
     EqualTo,
     ValidationError,
 )
-
 
 from .models import User
 

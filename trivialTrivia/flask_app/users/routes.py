@@ -1,8 +1,7 @@
-from flask import Blueprint, redirect, url_for, render_template, flash, request
+from flask import Blueprint, redirect, render_template, flash, request
 from flask_login import current_user, login_required, login_user, logout_user
 import base64
 import base64,io
-from io import BytesIO
 from .. import bcrypt
 from werkzeug.utils import secure_filename
 from ..forms import RegistrationForm, LoginForm, UpdateUsernameForm, UpdateProfilePicForm

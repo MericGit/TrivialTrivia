@@ -16,26 +16,15 @@ from werkzeug.utils import secure_filename
 from datetime import datetime
 import os
 
-# local
-from .client import MovieClient
-
-# update with your API Key
-OMDB_API_KEY = '2448dbed'
-
-# do not remove these 2 lines (required for autograder to work)
-if os.getenv('OMDB_API_KEY'):
-    OMDB_API_KEY = os.getenv('OMDB_API_KEY')
-
 db = MongoEngine()
 login_manager = LoginManager()
 bcrypt = Bcrypt()
-movie_client = MovieClient(OMDB_API_KEY)
 
 from .users.routes import users
 from .trivia.routes import trivia
 
 def custom_404(e):
-    return render_template("404.html", message="404 lol", link=url_for("movies.index")), 404
+    return render_template("404.html", message="404 lol", link=url_for("trivia.index")), 404
 
 
 def create_app(test_config=None):
