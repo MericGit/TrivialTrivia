@@ -6,13 +6,10 @@ import io, base64
 from io import BytesIO
 
 
-
-# TODO: implement
 @login_manager.user_loader
 def load_user(user_id):
     return User.objects(username=user_id).first()
 
-# TODO: implement fields
 class User(db.Document, UserMixin):
     username =  db.StringField(unique=True, required=True,min_length=1,max_length=40)
     email = db.EmailField(unique=True, required=True)
@@ -21,12 +18,10 @@ class User(db.Document, UserMixin):
 
     # Returns unique string identifying our object
     def get_id(self):
-        # TODO: implement
         return self.username
     def load_user(user_id):
         return User.objects(username=user_id).first()
 
-# TODO: implement fields
 class Review(db.Document):
     commenter = db.ReferenceField(User)
     content = db.StringField(required=True, min_length=5, max_length=500)
@@ -35,4 +30,8 @@ class Review(db.Document):
     movie_title = db.StringField(required=True, min_length=1, max_length=100)
     image = db.StringField()
 
-
+class Question(db.Document):
+    creator = db.ReferenceField(User)
+    question = db.StringField(unique=True, required=True,min_length=1,max_length=500)
+    answer = db.StringField(unique=True, required=True,min_length=1,max_length=100)
+    category = db.SelectField(required=True)

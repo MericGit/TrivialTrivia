@@ -3,7 +3,7 @@ from flask_login import current_user
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from werkzeug.utils import secure_filename
-from wtforms import StringField, SubmitField, TextAreaField, PasswordField
+from wtforms import StringField, SubmitField, TextAreaField, PasswordField, SelectField
 from wtforms.validators import (
     InputRequired,
     Length,
@@ -23,7 +23,7 @@ class TriviaGuessForm(FlaskForm):
 
 class QuestionSubmissionForm(FlaskForm):
     question = StringField(
-        "Question", validators=[InputRequired(), Length(min=1, max=100)]
+        "Question", validators=[InputRequired(), Length(min=1, max=500)]
     )
     answer = StringField(
         "Answer", validators=[InputRequired(), Length(min=1, max=100)]
