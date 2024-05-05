@@ -19,9 +19,9 @@
         {% endif %}
     {% endwith %}
 
-    <form method="POST" action="">
+    <form class="question-form" method="POST" action="">
         {{ form.csrf_token }}
-        <div class="form-group">
+        <div class="form-group question-input">
             {{ form.username.label }}
             {{ form.username(class="form-content") }}
             {% if form.username.errors %}
@@ -32,7 +32,7 @@
             </div>
             {% endif %}
         </div>
-        <div class="form-group">
+        <div class="form-group question-input">
             {{ form.password.label }}
             {{ form.password(class="form-content") }}
             {% if form.password.errors %}
@@ -43,7 +43,7 @@
             </div>
             {% endif %}
         </div>
-        {{ form.submit() }}
+        {{ form.submit(class="question-button") }}
     </form>
 
 </div>

@@ -8,9 +8,9 @@
 {% if current_user.is_authenticated %}
   {# Add A Question #}
     <div class="container mx-auto">
-      <form method="POST" action="">
+      <form method="POST" action="" class="question-form">
         {{ form.csrf_token }}
-        <div class="form-group">
+        <div class="form-group question-input">
           {{ form.question.label }} {{ form.question(class="form-content") }}
           {{ form.answer.label }} {{ form.answer(class="form-content") }}
           {{ form.category.label }} {{ form.category(class="form-content") }}
