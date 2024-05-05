@@ -47,21 +47,23 @@ def index():
             return redirect(url_for("movies.index"))
     return render_template("index.html", form=form, question=question, answer=answer, num_correct=session['score'])
 
-@trivia.route("/question_submission")
-def question_submission():
+@trivia.route("/question_submission", methods=["GET", "POST"])
+def add_question():
     form = QuestionSubmissionForm()
     if form.validate_on_submit():
         question = Question(
-            creator = current_user._get_current_object(),
-            question = form.question.data,
-            answer = form.answer.data,
-            category = form.category.data
+            maker=current_user._get_current_object(),
+            question=form.question.data,
+            answer=form.answer.data,
+            category=form.category.data
         )
 
         question.save()
-    
-    #???
-    return render_template("question_submission.html")
+
+        return redirect(request.path)
+    return render_template(
+        "add_question.html", form=form
+    )
 
 # @trivia.route("/movies/<movie_id>", methods=["GET", "POST"])
 # def movie_detail(movie_id):

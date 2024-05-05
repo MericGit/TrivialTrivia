@@ -1,0 +1,37 @@
+{% extends "header.html" %} {% block content %}
+
+{% if error_msg %}
+  <b class="text-red-400">
+    {{ error_msg }}
+  </b>
+{% endif %}
+{% if current_user.is_authenticated %}
+  {# Add A Question #}
+    <div class="container mx-auto">
+      <form method="POST" action="" class="review-form">
+        {{ form.csrf_token }}
+        <div class="form-group review-input">
+          {{ form.question.label }} {{ form.question(class="form-content") }}
+          {{ form.answer.label }} {{ form.answer(class="form-content") }}
+          {{ form.category.label }} {{ form.category(class="form-content") }}
+            {% if form.question.errors or form.answer.errors or form.category.errors %}
+              <div class="error" role="alert">
+                {% for error in form.question.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+                {% for error in form.answer.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+                {% for error in form.category.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          {{ form.submit(class="question-button") }}
+        </form>
+      </div>
+  </div>
+  <div class="w-0 lg:w-96"></div>
+</div>
+{% endif %} {% endblock content %}
