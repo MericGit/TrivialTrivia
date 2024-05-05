@@ -21,17 +21,10 @@
         
         {{ form.submit(class="form-button") }}
       </form>
-      <button id="toggleButton" onclick="toggleVariable()">Toggle Mode</button>
   </div>
-  <script>
-    // Function to toggle the variable value
-    function toggleVariable() {
-      if (mode === "api") {
-        mode = "mongo";
-      } else {
-        mode = "api";
-      }
-    }
-</script>
+  <form action="/" method="POST">
+    <input type="hidden" name="toggle_mode" value="true">
+    <button type="submit" class="mode-toggle-button">Toggle Mode</button>
+  </form>
 </div>
 {% endblock %}

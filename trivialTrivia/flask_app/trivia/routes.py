@@ -42,6 +42,12 @@ def index():
     elif session['mode'] == "mongo":
         question, answer = session['mongo_questions'][session['mongo_question_id']], session['mongo_answers'][session['mongo_question_id']]
     if request.method == "POST":
+        if 'toggle_mode' in request.form:
+            if session['mode'] == 'mongo':
+                session['mode'] = 'api'
+            else:
+                session['mode'] = 'mongo'
+
         
         if form.validate_on_submit():
             if session['mode'] == "api":
