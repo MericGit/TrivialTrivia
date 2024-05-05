@@ -1,6 +1,6 @@
-p4/__pycache__
-p4/flask_app/__pycache__
-p4/flask_app/users/__pycache__
-p4/flask_app/trivia/__pycache__
+trivialTrivia/__pycache__
+trivialTrivia/flask_app/__pycache__
+trivialTrivia/flask_app/users/__pycache__
+trivialTrivia/flask_app/trivia/__pycache__
 /venv
 p4/venv
