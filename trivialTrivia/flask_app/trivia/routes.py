@@ -5,12 +5,12 @@ from flask_login import current_user
 
 from .. import movie_client
 from ..forms import TriviaGuessForm, QuestionSubmissionForm
-from ..models import User, Review
+from ..models import User, Question
 from ..utils import current_time
 from ..trivia import trivia_api_utils
 
-movies = Blueprint("movies", __name__)
-movies.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+trivia = Blueprint("movies", __name__)
+trivia.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 """ ************ Helper for pictures uses username to get their profile picture************ """
 def get_b64_img(username):
     user = User.objects(username=username).first()
@@ -19,7 +19,7 @@ def get_b64_img(username):
     return image
 first_load = True
 """ ************ View functions ************ """
-@movies.route("/", methods=["GET", "POST"])
+@trivia.route("/", methods=["GET", "POST"])
 def index():
     global first_load
     if first_load:
@@ -47,28 +47,14 @@ def index():
             return redirect(url_for("movies.index"))
     return render_template("index.html", form=form, question=question, answer=answer, num_correct=session['score'])
 
-@movies.route("/search-results/<query>", methods=["GET"])
-def query_results(query):
-    try:
-        results = movie_client.search(query)
-    except ValueError as e:
-        return render_template("query.html", error_msg=str(e))
-
-    return render_template("query.html", results=results)
-
-
-@movies.route("/movies/<movie_id>", methods=["GET", "POST"])
-def movie_detail(movie_id):
-    try:
-        result = movie_client.retrieve_movie_by_id(movie_id)
-    except ValueError as e:
-        return render_template("movie_detail.html", error_msg=str(e))
-
-    form = MovieReviewForm()
+@trivia.route("/question_submission")
+def question_submission():
+    form = QuestionSubmissionForm()
     if form.validate_on_submit():
         question = Question(
-            question = form.question.data
-            answer = form.answer.data
+            creator = current_user._get_current_object(),
+            question = form.question.data,
+            answer = form.answer.data,
             category = form.category.data
         )
 
