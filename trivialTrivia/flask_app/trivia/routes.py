@@ -5,7 +5,7 @@ from flask_login import current_user
 
 from .. import movie_client
 from ..forms import TriviaGuessForm, QuestionSubmissionForm
-from ..models import User, Question
+from ..models import User, Question, Review
 from ..utils import current_time
 from ..trivia import trivia_api_utils
 
