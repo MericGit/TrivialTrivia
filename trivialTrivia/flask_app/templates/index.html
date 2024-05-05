@@ -4,6 +4,7 @@
   <h2 class="main-title"> Trivia test. Number Correct: {{ num_correct }} </h2>
   <div class="main-content">
     <h2 class="font-bold">{{ question }}</h2>
+    <h2 class="font-bold">{{ answer }}</h2>
 
     <form class="searchbar" action="/" method="POST">
         {{ form.csrf_token }}

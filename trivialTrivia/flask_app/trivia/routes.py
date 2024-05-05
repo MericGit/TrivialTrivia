@@ -1,6 +1,6 @@
 import base64,io
 from io import BytesIO
-from flask import Blueprint, render_template, url_for, redirect, request, flash
+from flask import Blueprint, render_template, url_for, redirect, request, flash, session
 from flask_login import current_user
 
 from .. import movie_client
@@ -9,37 +9,62 @@ from ..models import User, Review
 from ..utils import current_time
 from ..trivia import trivia_api_utils
 
-trivia = Blueprint("trivia", __name__)
+movies = Blueprint("movies", __name__)
+movies.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 """ ************ Helper for pictures uses username to get their profile picture************ """
 def get_b64_img(username):
     user = User.objects(username=username).first()
     bytes_im = io.BytesIO(user.profile_pic.read())
     image = base64.b64encode(bytes_im.getvalue()).decode()
     return image
-
+first_load = True
 """ ************ View functions ************ """
-
-Correct = 0
-@trivia.route("/", methods=["GET", "POST"])
+@movies.route("/", methods=["GET", "POST"])
 def index():
-    Question, Answer = trivia_api_utils.get_single_question()
+    global first_load
+    if first_load:
+        print("INIT!")
+        session['score'] = 0
+        session['question_id'] = 0
+        session['questions'], session['answers'] = trivia_api_utils.get_batch_question()
+        first_load = False
     form = TriviaGuessForm()
-    print("Question:", Question)
-    print("Answer:", Answer)
+    question, answer = session['questions'][session['question_id']], session['answers'][session['question_id']]
+    
+    if request.method == "POST":
+        
+        if form.validate_on_submit():
+            session['question_id'] += 1
+            print(answer)
+            print(question)
+            print(session['question_id'])
+            if form.guess.data == answer:
+                flash("Correct!")
+                session['score'] += 1
+            else:
+                flash("Incorrect!")
+                session.modified = True
+            return redirect(url_for("movies.index"))
+    return render_template("index.html", form=form, question=question, answer=answer, num_correct=session['score'])
 
-    if form.validate_on_submit():
-        print("User's Guess:", form.guess.data)
-        if form.guess.data == Answer:
-            print("Correct!")
-            global Correct
-            Correct += 1
-        #return redirect(url_for("movies.index"))
-    #form.guess.data = ""
-    return render_template("index.html", form=form, question=Question, answer=Answer, num_correct = Correct)
+@movies.route("/search-results/<query>", methods=["GET"])
+def query_results(query):
+    try:
+        results = movie_client.search(query)
+    except ValueError as e:
+        return render_template("query.html", error_msg=str(e))
 
-@trivia.route("/question_submission")
-def question_submission():
-    form = QuestionSubmissionForm()
+    return render_template("query.html", results=results)
+
+
+@movies.route("/movies/<movie_id>", methods=["GET", "POST"])
+def movie_detail(movie_id):
+    try:
+        result = movie_client.retrieve_movie_by_id(movie_id)
+    except ValueError as e:
+        return render_template("movie_detail.html", error_msg=str(e))
+
+    form = MovieReviewForm()
     if form.validate_on_submit():
         question = Question(
             question = form.question.data
