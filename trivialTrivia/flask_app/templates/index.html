@@ -1,12 +1,20 @@
 {% extends "header.html" %} {% block content %}
+<div class="max-w-md bg-blue-500 text-white py-8">
+  <h2 class="text-4xl font-bold text-center">Welcome to Trivial Trivia!</h2>
+</div>
+<br>
 <div class="main-container">
   <div class="decoration-main-container"><div class="decoration-main"></div></div>
-  <h2 class="main-title"> Trivia Test. Number Correct: {{ num_correct }} </h2>
-  <h2 class="font-bold">Current mode: {{ mode }}</h2>
+  <h2 class="main-title"> Trivia Test</h2>
+  <h2 class="text-2xl font-bold text-center">Number of Questions Correct: {{ num_correct }} </h2>
+  <h2 class="text-2xl font-bold text-center">Current Mode: {{ mode }}</h2>
+  <br>
+  <hr>
+  <br>
   <div class="main-content">
-    <h2 class="font-bold">{{ question }}</h2>
-    <h2 class="font-bold">{{ answer }}</h2>
-
+    <h2 class="text-lg font-bold text-center">{{ question }}</h2>
+    <h2 class="text-lg font-bold text-center">{{ answer }}</h2>
+    <br>
     <form class="searchbar" action="/" method="POST">
         {{ form.csrf_token }}
         {{ form.guess(class="form-control", placeholder="type here") }}
@@ -21,10 +29,13 @@
         
         {{ form.submit(class="form-button") }}
       </form>
-  </div>
-  <form action="/" method="POST">
-    <input type="hidden" name="toggle_mode" value="true">
-    <button type="submit" class="mode-toggle-button">Toggle Mode</button>
-  </form>
+    <br>
+
+    <div class="flex justify-center">
+      <form action="/" method="POST">
+        <input type="hidden" name="toggle_mode" value="true">
+        <button type="submit" class="border border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 font-bold py-2 px-4 rounded mode-toggle-button">Toggle Mode</button>
+      </form>
+    </div>
 </div>
 {% endblock %}

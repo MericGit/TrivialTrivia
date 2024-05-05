@@ -55,8 +55,7 @@
 </div>
 
 <div class="flex justify-center">
-    {# TODO: Link to see all of the current user's created questions. #}
     <div class="flex justify-center">
-        <a class="question-button" href="{{ url_for('trivia.user_statistics', username=current_user.username) }}">Statistics Page</a>
+        <a class="question-button" href="{{ url_for('trivia.user_statistics', username=current_user.username) }}"> Your Statistics Page</a>
     </div>
 {% endblock %}
