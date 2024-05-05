@@ -83,9 +83,7 @@ def user_detail(username):
 
 @trivia.route("/leaderboard")
 def leaderboard():
-    users = User.objects()
+    users = list(User.objects())
+    users.sort(key=lambda x: x.high_score, reverse=True)
 
-    for i in users:
-        print(i)
-
-    return render_template("404.html")
+    return render_template("leaderboard.html", users=users)
