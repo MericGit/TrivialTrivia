@@ -71,16 +71,15 @@ def question_submission():
 
 #statistics on account links here, refactor to individual user statistics
 @trivia.route("/user/<username>")
-def user_detail(username):
+def user_statistics(username):
     #user = find first match in db
     
     user = User.objects(username=username).first()
     #img = get_b64_img(user.username) use their username for helper function
     if user is None:
-        return render_template("user_detail.html", error ="Hi", user=None, image=None)
-    return render_template("user_detail.html", user=user, image=get_b64_img(user.username))
-
-
+        return render_template("user_statistics.html", error ="Hi", user=None, image=None)
+    questions = Question.objects(creator=user)
+    return render_template("user_statistics.html", user=user, questions = questions, image=get_b64_img(user.username))
 @trivia.route("/leaderboard")
 def leaderboard():
     users = list(User.objects())
