@@ -1,4 +1,6 @@
-{% extends "header.html" %} {% block content %}
+{% extends "header.html" %}
+
+{% block content %}
 <div class="max-w-md bg-blue-500 text-white py-8">
   <h2 class="text-4xl font-bold text-center">Welcome to Trivial Trivia!</h2>
 </div>
@@ -18,35 +20,76 @@
   <hr>
   <br>
   <div class="main-content">
-    <h2 class="text-lg font-bold text-center">{{ question }}</h2>
-    <br>
     <form class="searchbar" action="/" method="POST">
-        {{ form.csrf_token }}
-        {{ form.guess(class="form-control", placeholder="type here") }}
-
-        {% if form.guess.errors %}
-          <div class="error" role="alert">
-            {% for error in form.guess.errors %}
-              <span>{{ error }}</span>
-            {% endfor %}
-          </div>
-        {% endif %}
-        
-        {{ form.submit(class="form-button") }}
-      </form>
+      {{ form.csrf_token }}
+      {{ form.guess(class="form-control", placeholder="type here") }}
+  
+      {% if form.guess.errors %}
+        <div class="error" role="alert">
+          {% for error in form.guess.errors %}
+            <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+      {% endif %}
+      
+      {{ form.submit(class="form-button") }}
+    </form>
+    <h2 id="question-text" class="text-lg font-bold" style="padding-left: 20px; padding-right: 20px;"></h2>
+    <br>
     <br>
 
     <div class="flex justify-center">
+
       <form action="/" method="POST">
         <input type="hidden" name="toggle_mode" value="true">
         <button type="submit" class="border border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 font-bold py-2 px-4 rounded mode-toggle-button">Toggle Mode</button>
       </form>
     </div>
-
-    <div class="flex justify-center py-5 text-red-600">
-      {% for msg in get_flashed_messages() %}
-        <h1>{{ msg }}</h1>
-      {% endfor %}
-    </div>
+  </div>
 </div>
+<div class="flex justify-center py-5 text-red-600">
+  {% for msg in get_flashed_messages() %}
+    <h1>{{ msg }}</h1>
+  {% endfor %}
+</div>
+<div class="flex justify-center">
+  <table>
+      <tr>
+          <th style="border: 1px solid #fff4">question #</th>
+          <th style="border: 1px solid #fff4">guess</th>
+          <th style="border: 1px solid #fff4">ans</th>
+          <th style="border: 1px solid #fff4">time</th>
+          <th style="border: 1px solid #fff4">raw-match</th>
+
+
+      </tr>
+      {% for i in log %}
+          <tr>
+              <td style="border: 1px solid #fff4"> {{ i[0] }} </td>
+              <td style="border: 1px solid #fff4">{{ i[1] }}</td>
+              <td style="border: 1px solid #fff4">{{ i[2] }}</td> 
+              <td style="border: 1px solid #fff4">{{ i[3] }}</td> 
+              <td style="border: 1px solid #fff4">{{ i[1].lower() == i[2].lower() }}</td>
+
+          </tr>
+      {% endfor %}
+  </table>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const questionElement = document.getElementById('question-text');
+  const questionText = "{{ question }}"; // Get the question text from your backend
+
+  let index = 0;
+  const intervalId = setInterval(function() {
+    if (index <= questionText.length) {
+      questionElement.textContent = questionText.slice(0, index);
+      index++;
+    } else {
+      clearInterval(intervalId); // Stop the animation when complete
+    }
+  }, 15); // Adjust the interval duration (milliseconds) for speed
+});
+</script>
+
 {% endblock %}

@@ -6,6 +6,8 @@ from flask_login import current_user
 from ..forms import TriviaGuessForm, QuestionSubmissionForm
 from ..models import User, Question
 from ..trivia import trivia_api_utils
+import logging
+import time
 
 trivia = Blueprint("trivia", __name__)
 trivia.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -17,40 +19,52 @@ def get_b64_img(username):
     return image
 
 """ ************ View functions ************ """
+@trivia.before_request
+def before_request():
+    session['start_time'] = time.time()
+
 @trivia.route("/", methods=["GET", "POST"])
 def index():
     form = TriviaGuessForm()
     if 'mode' not in session:
-        session['mode'] = "api"
+        session.clear()
+        session['mode'] = "mongo"
         session['score'] = 0
         session['questions_seen'] = 0
         session['question_id'] = 0
         session['mongo_question_id'] = 0
         session['questions'], session['answers'] = trivia_api_utils.get_batch_question()
-        mongo_questions = []
-        mongo_answers = []
-        for q in Question.objects():
-            mongo_questions.append(q.question)
-            mongo_answers.append(q.answer)
-        session['mongo_questions'] = mongo_questions
-        session['mongo_answers'] = mongo_answers
+        session['log'] = []
+        #mongo_questions = []
+        #mongo_answers = []
+        #for q in Question.objects.filter(category="470"):
+        #    mongo_questions.append(q.question)
+        #    mongo_answers.append(q.answer)
+        #session['mongo_questions'] = mongo_questions
+        #session['mongo_answers'] = mongo_answers
         session['first_load'] = False
+    mongo_questions = []
+    mongo_answers = []
+    for q in Question.objects.filter(category="470"):
+        mongo_questions.append(q.question)
+        mongo_answers.append(q.answer)
     if session['mode'] == "api":
         question, answer = session['questions'][session['question_id']], session['answers'][session['question_id']]
     elif session['mode'] == "mongo":
-        question, answer = session['mongo_questions'][session['mongo_question_id']], session['mongo_answers'][session['mongo_question_id']]
+        question, answer = mongo_questions[session['mongo_question_id']], mongo_answers[session['mongo_question_id']]
     if request.method == "POST":
         if 'toggle_mode' in request.form:
             if session['mode'] == 'mongo':
                 session['mode'] = 'api'
-            else:
+            elif session['mode'] == 'api':
                 session['mode'] = 'mongo'
         if form.validate_on_submit():
+            stop_time = time.time()
             if session['mode'] == "api":
                 session['question_id'] += 1
             elif session['mode'] == "mongo":
                 session['mongo_question_id'] += 1
-                if session['mongo_question_id'] >= len(session['mongo_questions']):
+                if session['mongo_question_id'] >= len(mongo_questions):
                     session['mode'] = "api"
                     session['mongo_question_id'] = 0
             print(answer)
@@ -60,8 +74,10 @@ def index():
             if current_user.is_authenticated:  
                 current_user.questions_seen += 1
                 current_user.save()
+
+            session['log'].append((session['mongo_question_id'], form.guess.data.lower(), answer.lower(), (stop_time - session['prev_time']).__round__(2))) 
+            session['prev_time'] = stop_time
             if form.guess.data.lower() == answer.lower():
-                flash("Correct!")
                 session['score'] += 1
                 
                 if current_user.is_authenticated:  
@@ -74,7 +90,7 @@ def index():
                 flash("Incorrect!")
                 session.modified = True
             return redirect(url_for("trivia.index"))
-    return render_template("index.html", form=form, question=question, answer=answer, num_correct=session['score'], seen = session['questions_seen'], mode=session['mode'])
+    return render_template("index.html", form=form, question=question, answer=answer, num_correct=session['score'], seen = session['questions_seen'], mode=session['mode'],log = session['log'])
 
 @trivia.route("/question_submission", methods=["GET", "POST"])
 def question_submission():

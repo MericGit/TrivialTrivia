@@ -22,6 +22,6 @@ class User(db.Document, UserMixin):
 
 class Question(db.Document):
     creator = db.ReferenceField(User)
-    question = db.StringField(unique=True, required=True,min_length=5,max_length=500)
+    question = db.StringField(unique=True, required=True,min_length=5,max_length=1000)
     answer = db.StringField(unique=True, required=True,min_length=1,max_length=100)
     category = db.StringField(required=True)
