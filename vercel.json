@@ -1,0 +1,14 @@
+{
+    "builds": [
+        {
+            "src": "trivialTrivia/app.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "routes": [
+        { 
+            "src": "/(.*)", 
+            "dest": "trivialTrivia/app.py" 
+        }
+    ]
+}
