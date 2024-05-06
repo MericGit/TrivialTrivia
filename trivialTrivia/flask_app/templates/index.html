@@ -6,14 +6,19 @@
 <div class="main-container">
   <div class="decoration-main-container"><div class="decoration-main"></div></div>
   <h2 class="main-title"> Trivia Test</h2>
-  <h2 class="text-2xl font-bold text-center">Number of Questions Correct: {{ num_correct }} </h2>
-  <h2 class="text-2xl font-bold text-center">Current Mode: {{ mode }}</h2>
+  <h2 class="text-2xl font-bold text-center">Number of Questions Correct in Session: {{ num_correct }} </h2>
+  <h2 class="text-2xl font-bold text-center">Number of Questions Answered in Session: {{ seen }} </h2>
+  <h2 class="text-2xl font-bold text-center">Session Accuracy: {{ 0 if seen == 0 else ((num_correct*100)/seen) | round(3)}}% </h2>
+  {% if mode == "api"%}
+    <h2 class="text-2xl font-bold text-center">Current Mode: Built-In Questions </h2>
+  {% else %}
+    <h2 class="text-2xl font-bold text-center">Current Mode: User-Created Questions </h2>
+  {% endif %}
   <br>
   <hr>
   <br>
   <div class="main-content">
     <h2 class="text-lg font-bold text-center">{{ question }}</h2>
-    <h2 class="text-lg font-bold text-center">{{ answer }}</h2>
     <br>
     <form class="searchbar" action="/" method="POST">
         {{ form.csrf_token }}

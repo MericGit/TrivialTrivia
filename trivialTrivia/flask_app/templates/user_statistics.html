@@ -14,9 +14,13 @@
 </div>
 <div class="container mx-auto w-full md:w-2/3 lg:w-1/3">
     {% if user %}
-        <h4 class="text-2xl text-neutral-500">{{user.username}}'s High Score': <b class="text-white">{{user.high_score}}</b></h4>
+        <h4 class="text-2xl text-neutral-500">{{user.username}}'s High Score: <b class="text-white">{{user.high_score}}</b></h4>
+        <h4 class="text-2xl text-neutral-500">{{user.username}}'s Total Questions Correct: <b class="text-white">{{user.questions_correct}}</b></h4>
+        <h4 class="text-2xl text-neutral-500">{{user.username}}'s Total Questions Answered: <b class="text-white">{{user.questions_seen}}</b></h4>
+        <h4 class="text-2xl text-neutral-500">{{user.username}}'s All-Time Accuracy: <b class="text-white">{{ 0 if user.questions_seen == 0 else ((user.questions_correct*100)/user.questions_seen) | round(3)}}%</b></h4>
         <br>
         <h4 class="text-2xl text-neutral-500">Number of Questions Created: <b class="text-white">{{ questions|length }}</b></h4>
+        <h4 class="text-2xl text-neutral-500">Created Questions List: <b class="text-white"></b></h4>
         <br>
         <table>
             <tr>

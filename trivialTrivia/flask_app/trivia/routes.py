@@ -77,7 +77,7 @@ def index():
                 flash("Incorrect!")
                 session.modified = True
             return redirect(url_for("trivia.index"))
-    return render_template("index.html", form=form, question=question, answer=answer, num_correct=session['score'], mode=session['mode'])
+    return render_template("index.html", form=form, question=question, answer=answer, num_correct=session['score'], seen = session['questions_seen'], mode=session['mode'])
 
 @trivia.route("/question_submission", methods=["GET", "POST"])
 def question_submission():
@@ -113,7 +113,12 @@ def user_statistics(username):
 
 @trivia.route("/leaderboard")
 def leaderboard():
-    users = list(User.objects())
-    users.sort(key=lambda x: x.high_score, reverse=True)
-
-    return render_template("leaderboard.html", users=users)
+    users1 = list(User.objects())
+    users1.sort(key=lambda x: x.high_score, reverse=True)
+    users2 = list(User.objects())
+    users2.sort(key=lambda x: x.questions_correct, reverse=True)
+    users3 = list(User.objects())
+    users3.sort(key=lambda x: x.questions_seen, reverse=True)
+    users4 = list(User.objects())
+    users4.sort(key=lambda x: 0 if x.questions_seen == 0 else (x.questions_correct / x.questions_seen), reverse=True)
+    return render_template("leaderboard.html", users1=users1, users2 = users2, users3 = users3, users4 = users4)
