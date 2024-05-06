@@ -20,6 +20,21 @@ def get_b64_img(username):
 @trivia.route("/", methods=["GET", "POST"])
 def index():
     form = TriviaGuessForm()
+    if 'mode' not in session:
+        session['mode'] = "api"
+        session['score'] = 0
+        session['questions_seen'] = 0
+        session['question_id'] = 0
+        session['mongo_question_id'] = 0
+        session['questions'], session['answers'] = trivia_api_utils.get_batch_question()
+        mongo_questions = []
+        mongo_answers = []
+        for q in Question.objects():
+            mongo_questions.append(q.question)
+            mongo_answers.append(q.answer)
+        session['mongo_questions'] = mongo_questions
+        session['mongo_answers'] = mongo_answers
+        session['first_load'] = False
     if session['mode'] == "api":
         question, answer = session['questions'][session['question_id']], session['answers'][session['question_id']]
     elif session['mode'] == "mongo":
