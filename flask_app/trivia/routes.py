@@ -35,6 +35,7 @@ def index():
         session['mongo_question_id'] = 0
         session['questions'], session['answers'] = trivia_api_utils.get_batch_question()
         session['log'] = []
+        session['prev_time'] = time.time()
         #mongo_questions = []
         #mongo_answers = []
         #for q in Question.objects.filter(category="470"):
