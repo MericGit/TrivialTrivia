@@ -12,6 +12,8 @@ class User(db.Document, UserMixin):
     password = db.StringField(required=True)
     profile_pic = db.ImageField()
     high_score = db.IntField(default=0)
+    questions_seen = db.IntField(default=0)
+    questions_correct = db.IntField(default=0)
     # Returns unique string identifying our object
     def get_id(self):
         return self.username

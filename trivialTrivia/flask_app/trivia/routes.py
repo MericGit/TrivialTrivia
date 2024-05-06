@@ -25,6 +25,7 @@ def index():
         print("INIT!")
         session['mode'] = "api"
         session['score'] = 0
+        session['questions_seen'] = 0
         session['question_id'] = 0
         session['mongo_question_id'] = 0
         session['questions'], session['answers'] = trivia_api_utils.get_batch_question()
@@ -47,8 +48,6 @@ def index():
                 session['mode'] = 'api'
             else:
                 session['mode'] = 'mongo'
-
-        
         if form.validate_on_submit():
             if session['mode'] == "api":
                 session['question_id'] += 1
@@ -60,10 +59,17 @@ def index():
             print(answer)
             print(question)
             print(session['question_id'])
+            session['questions_seen'] += 1
+            if current_user.is_authenticated:  
+                current_user.questions_seen += 1
+                current_user.save()
             if form.guess.data.lower() == answer.lower():
                 flash("Correct!")
                 session['score'] += 1
+                
                 if current_user.is_authenticated:  
+                    current_user.questions_correct += 1
+                    current_user.save()
                     if session['score'] > current_user.high_score:
                         current_user.high_score = session['score']
                         current_user.save()
