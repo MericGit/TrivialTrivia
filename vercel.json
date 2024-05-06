@@ -2,14 +2,14 @@
     "version": 2,
     "builds": [
         {
-            "src": "/trivialTrivia/app.py",
+            "src": "/trivialTrivia/run.py",
             "use": "@vercel/python"
         }
     ],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "/trivialTrivia/app.py"
+            "dest": "/trivialTrivia/run.py"
         }
     ]
 }
