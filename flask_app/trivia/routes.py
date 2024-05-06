@@ -16,27 +16,9 @@ def get_b64_img(username):
     image = base64.b64encode(bytes_im.getvalue()).decode()
     return image
 
-first_load = True
 """ ************ View functions ************ """
 @trivia.route("/", methods=["GET", "POST"])
 def index():
-    global first_load
-    if first_load:
-        print("INIT!")
-        session['mode'] = "api"
-        session['score'] = 0
-        session['questions_seen'] = 0
-        session['question_id'] = 0
-        session['mongo_question_id'] = 0
-        session['questions'], session['answers'] = trivia_api_utils.get_batch_question()
-        mongo_questions = []
-        mongo_answers = []
-        for q in Question.objects():
-            mongo_questions.append(q.question)
-            mongo_answers.append(q.answer)
-        session['mongo_questions'] = mongo_questions
-        session['mongo_answers'] = mongo_answers
-        first_load = False
     form = TriviaGuessForm()
     if session['mode'] == "api":
         question, answer = session['questions'][session['question_id']], session['answers'][session['question_id']]
